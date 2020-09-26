@@ -12,9 +12,45 @@ $rank(A) = rank(B) = n$, 即A和B的秩相等且为n
 
 高斯消元法首先对增广矩阵进行初等行变换，把B变成一个三角矩阵，然后从后往前依次带入得到最终解。
 
-### 1.2 QR分解的原理是什么？
+### 1.3 QR分解的原理是什么？
 
+$QR$分解是把矩阵$A$分解为$A=QR$的形式, 其中$Q$是正交矩阵，$R$是上三角矩阵
 
+### 1.4 Cholesky 分解的原理是什么?
+
+如果$A$是一个实对称正定矩阵，则$A$可分解为一个下三角矩阵及其转置的乘积，即$A = LL^T$.
+
+### 1.5 编程实现 A 为 100 × 100 随机矩阵时,用 QR 和 Cholesky 分解求 x 的程序
+
+代码如下：
+
+```c++
+#include <iostream>
+#include <Eigen/Dense>
+
+int main()
+{
+    Eigen::Matrix<double, 100, 100> A = Eigen::MatrixXd::Random(100, 100);
+    A = A * A.transpose();
+
+    Eigen::Matrix<double, 100, 1> x;
+    Eigen::Matrix<double, 100, 1> b = Eigen::MatrixXd::Random(100, 1);
+
+    // QR
+    x = A.colPivHouseholderQr().solve(b);
+    std::cout << "QR" << std::endl;
+    std::cout << x << std::endl;
+
+    // Cholesky
+    x = A.ldlt().solve(b);
+    std::cout << std::endl << "Cholesky" << std::endl;
+    std::cout << x << std::endl;
+
+    return 0;
+}
+```
+
+> 运行结果太长了，就不截图了。
 
 ## 2. 几何运算练习
 
@@ -27,9 +63,15 @@ $rank(A) = rank(B) = n$, 即A和B的秩相等且为n
 
 现在,小萝卜一号看到某个点在自身的坐标系下,坐标为 p 1 = [0.5, −0.1, 0.2] T ,求该向量在小萝卜二号坐标系下的坐标。
 
-**主要代码如下：**
+**代码如下：**
 
 ```c++
+#include <iostream>
+#include <Eigen/Core>
+#include <Eigen/Dense>
+
+int main()
+{
     Eigen::Quaterniond q1(0.55, 0.3, 0.2, 0.2);
     Eigen::Quaterniond q2(-0.1, 0.3, -0.7, 0.2);
     q1.normalize();
@@ -48,6 +90,9 @@ $rank(A) = rank(B) = n$, 即A和B的秩相等且为n
     // p2 = T_2w * T_w1 * p1
     Eigen::Vector3d p2 = T_2w * T_1w.inverse() * p1;
     std::cout << "p2 is " << std::endl << p2 << std::endl;
+
+    return 0;
+}
 ```
 
 **运行结果如下：**
@@ -83,7 +128,7 @@ q^{\oplus} =  \left[
 }
 \right]
 $$
-其中运算$\times$和$\wedge$相同，即取$\epsilon$的反对称矩阵(它们都成叉积的矩阵运算形式),1 为单位矩阵。请证明对任意单位四元数 q 1 , q 2 ,四元数乘法可写成矩阵乘法:
+其中运算$\times$和$\wedge$相同，即取$\epsilon$的反对称矩阵(它们都成叉积的矩阵运算形式), $1$为单位矩阵。请证明对任意单位四元数 $q_1, q_2$ ,四元数乘法可写成矩阵乘法:
 $$
 q_1q_2 = q_1^{+}q_2
 $$
@@ -103,10 +148,106 @@ R = cos{\theta}I + (1 - cos{\theta})nn^T + sin{\theta}n^{\wedge}
 $$
 证明如下：
 
+> 参考 [Rodrigues' rotation formula](https://en.wikipedia.org/wiki/Rodrigues%27_rotation_formula)
 
+![r1](./images/r1.svg)
+
+如上图, 向量$\boldsymbol{v}$绕单位向量$\boldsymbol{k}$旋转$\theta$，得到向量$\boldsymbol{v_{rot}}$, $\boldsymbol{v}$可分解为垂直和平行与旋转轴的分量$v_{\perp},v_{\parallel}$。则有：
+$$
+\boldsymbol{v} = v_{\perp} + v_{\parallel} \\
+v_{\parallel} = (k \cdot v)k \\
+v_{\perp} = v-v_{\parallel} = v-(k \cdot v)k
+$$
+![r2](./images/r2.svg)
+
+如上图，有：
+$$
+v_{\perp} = -k \times (k \times v) \\
+v_{{\parallel}rot} = v_{\parallel} \\
+\|v_{{\perp}rot}\| =\| v_{\perp}\|
+$$
+ 由上图，根据三角关系，有：
+$$
+v_{{\perp}rot} = cos\theta v_{\perp} + sin\theta k \times v_{\perp}
+$$
+因为$k$与$v_{parallel}$平行，所以它们做叉乘结果为$\boldsymbol{0}$向量，且根据$v$与投影分量的关系，有:
+$$
+k \times v_{\perp} = k \times (v-v_{\parallel}) = k \times v - k \times v_{\parallel} = k \times v
+$$
+所以v⊥rot=cosθv⊥+sinθ(k×v)
+$$
+v_{{\perp}rot} = cos\theta v_{\perp} + sin{\theta}(k \times v)
+$$
+故：
+$$
+\begin{aligned}
+& v_{rot}  = v_{{\parallel}rot} + v_{{\perp}rot} \\
+&\ \ \ \ \ \ =v_{\parallel} + cosθ v_{\perp}+sinθ(k \times v) \\
+&\ \ \ \ \ \ = v_{\parallel} + cosθ(v−v_{\parallel})+sinθ(k×v) \\
+&\ \ \ \ \ \ =cosθv+(1−cosθ)v_{\parallel} + sinθ(k×v) \\
+&\ \ \ \ \ \  =cosθv+(1−cosθ)(k⋅v)k+sinθ(k×v)
+\end{aligned}
+$$
+即：
+$$
+v_{rot} = cosθv + sinθ(k×v) + (1−cosθ)(k⋅v)k
+$$
+由于：
+$$
+k^{\wedge} = K = \left[
+\matrix{
+  0 & -k_z & k_y \\
+  k_z & 0 & -k_z \\
+  -k_y & k_x & 0
+}
+\right],
+$$
+所以有：
+$$
+Kv=k×v \\
+K^2v=k×(k×v)
+$$
+结合公式(5)(6)，有：
+$$
+\begin{aligned}
+& v_{rot}=cosθv+(1−cosθ)v_{\parallel}+sinθ(k×v)\\
+& \ \ \ \ \ \ \ =cosθv+(1−cosθ)(v+k×(k×v))+sinθ(k×v)
+\end{aligned}
+$$
+整理得：
+$$
+\begin{aligned}
+& v_{rot}=v+K^2v−cosθK^2v+sinθKv \\
+& \ \ \ \ \ \ =v(I+K^w−cosθK^2+sinθK)
+\end{aligned}
+$$
+由于：
+$$
+v_{rot} = R * v
+$$
+则：
+$$
+R=I+(1−cosθ)K^2+sinθK
+$$
+根据公式(12)有：
+$$
+K^2=kk^T−I
+$$
+整理可得：
+$$
+R=cosθI+(1−cosθ)kk^T+sinθk^×
+$$
+证毕。
 
 ## 5. 四元数运算性质的验证
 
+假设一个点$p = [0, x, y, z]^T$, 经过旋转$q = [cos\frac{\theta}{2}, \hat{n}sin\frac{\theta}{2}]$后得到$q^{'}$.
+
+则：
+$$
+qp = [cos\frac{\theta}{2}, n_xsin\frac{\theta}{2}, n_y\frac{\theta}{2}, n_z\frac{\theta}{2}] * [0, x, y, z]^T \\
+=[-xn_xsin\frac{\theta}{2} - yn_y\frac{\theta}{2}-zn_z\frac{\theta}{2}, xcos\frac{\theta}{2}+zn_y]
+$$
 
 
 ## 6. 熟悉C++11
