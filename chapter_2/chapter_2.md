@@ -138,6 +138,31 @@ q_1q_2 = q_2^{\oplus}q_1
 $$
 证明如下：
 
+$$
+q_1^+q_2 =\left[
+\matrix{
+  \eta_11+ \epsilon_1^{\times} & \epsilon_1\\
+  -\epsilon_1^{T} & \eta_1\\
+}
+\right]
+\left[
+\matrix{
+ \epsilon_2\\
+ \eta_2\\
+}
+\right]=
+\left[
+\matrix{
+  \eta_1\epsilon_2+ \eta_2\epsilon_1 +\epsilon_1^\wedge \epsilon_2\\
+  -\epsilon_1^T\epsilon_2 +\eta_1\eta_2
+}
+\right]
+=q_1q_2
+$$
+同理可证：
+$$
+q_2^{\oplus}q_1 = q_1q_2
+$$
 
 
 ## 4. 罗德里格斯公式证明
@@ -158,7 +183,7 @@ $$
 v_{\parallel} = (k \cdot v)k \\
 v_{\perp} = v-v_{\parallel} = v-(k \cdot v)k
 $$
-![r2](./images/r2.svg)
+<img src="./images/r2.svg" alt="r2" style="zoom:85%;" />
 
 如上图，有：
 $$
@@ -174,7 +199,7 @@ $$
 $$
 k \times v_{\perp} = k \times (v-v_{\parallel}) = k \times v - k \times v_{\parallel} = k \times v
 $$
-所以v⊥rot=cosθv⊥+sinθ(k×v)
+所以
 $$
 v_{{\perp}rot} = cos\theta v_{\perp} + sin{\theta}(k \times v)
 $$
@@ -245,10 +270,17 @@ $$
 
 则：
 $$
-qp = [cos\frac{\theta}{2}, n_xsin\frac{\theta}{2}, n_y\frac{\theta}{2}, n_z\frac{\theta}{2}] * [0, x, y, z]^T \\
-=[-xn_xsin\frac{\theta}{2} - yn_y\frac{\theta}{2}-zn_z\frac{\theta}{2}, xcos\frac{\theta}{2}+zn_y]
+q^{'} = qpq^{-1} = [cos\frac{\theta}{2}, n_xsin\frac{\theta}{2}, n_y\frac{\theta}{2}, n_z\frac{\theta}{2}] [0, x, y, z]\frac{q^{*}}{\|q\|^{2}} \\
+=[cos\frac{\theta}{2}, -n_xsin\frac{\theta}{2}, -n_y\frac{\theta}{2}, -n_z\frac{\theta}{2}] [0, x, y, z][cos\frac{\theta}{2}, n_xsin\frac{\theta}{2}, n_y\frac{\theta}{2}, n_z\frac{\theta}{2}]
 $$
-
+取运算结果实部为：
+$$
+(-xn_xsin\frac{\theta}{2}-yn_ysin\frac{\theta}{2}-zn_zsin\frac{\theta}{2})(cos\frac{\theta}{2}) \\
+-(xcos\frac{\theta}{2}+zn_ysin\frac{\theta}{2}-zn_ysin\frac{\theta}{2})(-n_xsin\frac{\theta}{2}) \\
+-(ycos\frac{\theta}{2}-zn_xsin\frac{\theta}{2}+xn_zsin\frac{\theta}{2})(-nysin\frac{\theta}{2}) \\
+-(zcos\frac{\theta}{2}+yn_xsin\frac{\theta}{2}-xn_ysin\frac{\theta}{2})(-n_zsin\frac{\theta}{2}) \\
+$$
+上式整理后为0.
 
 ## 6. 熟悉C++11
 
