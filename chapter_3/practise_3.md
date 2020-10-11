@@ -52,11 +52,59 @@ $$
 
 ## 3. 推导$SE(3)$的指数映射
 
-
+$se(3)$上的指数映射为
+$$
+\begin{aligned}
+\exp \left(\boldsymbol{\xi}^{\wedge}\right) &=\left[\begin{array}{cc}
+\sum_{n=0}^{\infty} \frac{1}{n !}\left(\phi^{\wedge}\right)^{n} & \sum_{n=0}^{\infty} \frac{1}{(n+1) !}\left(\phi^{\wedge}\right)^{n} \rho \\
+0^{\mathrm{T}} & 1
+\end{array}\right] \\
+& \triangleq\left[\begin{array}{cc}
+\boldsymbol{R} & \boldsymbol{J} \boldsymbol{\rho} \\
+\mathbf{0}^{\mathrm{T}} & 1
+\end{array}\right]=\boldsymbol{T}
+\end{aligned}
+$$
+其中R的部分已经由$so(3)$指数映射推导得到，这里不再推导，一下推倒平移部分，主要是$J$的推导，内容如下：
+$$
+\begin{aligned}
+\sum_{n=0}^{\infty} \frac{1}{(n+1) !}\left(\phi^{\wedge}\right)^{n} &=I+\frac{1}{2 !} \theta a^{\wedge}+\frac{1}{3 !} \theta^{2}\left(a^{\wedge}\right)^{2}+\frac{1}{4 !} \theta^{3}\left(a^{\wedge}\right)^{3}+\frac{1}{5 !} \theta^{4}\left(a^{\wedge}\right)^{4} \cdots \\
+&=\frac{1}{\theta}\left(\frac{1}{2 !} \theta^{2}-\frac{1}{4 !} \theta^{4}+\cdots\right)\left(a^{\wedge}\right)+\frac{1}{\theta}\left(\frac{1}{3 !} \theta^{3}-\frac{1}{5} \theta^{5}+\cdots\right)\left(a^{\wedge}\right)^{2}+I \\
+&=\frac{1}{\theta}(1-\cos \theta)\left(a^{\wedge}\right)+\frac{\theta-\sin \theta}{\theta}\left(a a^{T}-I\right)+I \\
+&=\frac{\sin \theta}{\theta} I+\left(1-\frac{\sin \theta}{\theta}\right) a a^{T}+\frac{1-\cos \theta}{\theta} a^{\wedge} \triangleq J
+\end{aligned}
+$$
 
 ## 4. 伴随
 
-
+对于任意向量$\boldsymbol{v}$,有
+$$
+\begin{aligned}
+(R a)^{\wedge} v &=(R a) \times v \\
+&=(R a) \times\left(R R^{-1} v\right) \\
+&=R\left[a \times\left(R^{-1} v\right)\right] \\
+&=R a^{\wedge} R^{-1} v \\
+&=R a^{\wedge} R^{T} v
+\end{aligned}
+$$
+因此有
+$$
+(R a)^{\wedge} v = R a^{\wedge} R^{T} v
+$$
+则：
+$$
+(R a)^{\wedge}  = R a^{\wedge} R^{T} 
+$$
+另$p = \theta a$,
+$$
+\begin{aligned}
+R \exp \left(\theta a^{\wedge}\right) R^{T} &=R\left(\cos \theta I+(1-\cos \theta) a a^{T}+\sin \theta a^{\wedge}\right) R^{T} \\
+&=\cos \theta I+(1-\cos \theta) R a(R a)^{T}+\sin \theta R a^{\wedge} R^{T} \\
+&=\cos \theta I+(1-\cos \theta) R a(R a)^{T}+\sin \theta(R a)^{\wedge} \\
+&=\exp \left(\theta(R a)^{\wedge}\right) \\
+&=\exp \left((R p)^{\wedge}\right)
+\end{aligned}
+$$
 
 ## 5. 轨迹的描绘
 
